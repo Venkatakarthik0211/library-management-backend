@@ -1,7 +1,9 @@
 # Library-Management-Using-Go
 
 <h2>Database Schema</h2>
-<img src="https://github.com/Venkatakarthik0211 library-management-backend/Database-schema.png"></img>
+<img src="https://github.com/Venkatakarthik0211/library-management-backend/blob/main/Database-schema.png" alt="Database-schema" style="border: 2px solid #000;">
+
+
 
 **_What's Required?_**
 _Install Go & MongoDB_
