@@ -17,7 +17,6 @@ func Authenticate() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		claims, err := helper.ValidateToken(clientToken)
-
+		helper.ValidateToken(clientToken)
 	}
 }
