@@ -20,6 +20,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type book struct {
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	Author   string `json:"author"`
+	Quantity int    `json:"quantity"`
+}
+
+var books = []book{
+	{ID: "1", Title: "In Search of Lost Time", Author: "Marcel Proust", Quantity: 2},
+	{ID: "2", Title: "The Great Gatsby", Author: "F. Scott Fitzgerald", Quantity: 5},
+	{ID: "3", Title: "War and Peace", Author: "Leo Tolstoy", Quantity: 6},
+}
+
 var userCollection *mongo.Collection = database.OpenCollection(database.Client, "user")
 var validate = validator.New()
 
@@ -47,6 +60,8 @@ func Signup() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
 		var user models.User
 
 		if err := c.BindJSON(&user); err != nil {
@@ -104,6 +119,7 @@ func Signup() gin.HandlerFunc {
 func Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 		var user models.User
 		var foundUser models.User
 
@@ -203,5 +219,75 @@ func GetUser() gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, user)
+	}
+}
+func GetBooks() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, books)
+	}
+}
+func GetBookByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bookID := c.Param("id")
+
+		for _, b := range books {
+			if b.ID == bookID {
+				c.JSON(http.StatusOK, b)
+				return
+			}
+		}
+
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+	}
+}
+
+func UpdateBook() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bookID := c.Param("id")
+		var updatedBook book
+
+		if err := c.BindJSON(&updatedBook); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		for i, b := range books {
+			if b.ID == bookID {
+				books[i] = updatedBook
+				c.JSON(http.StatusOK, gin.H{"message": "Book updated successfully"})
+				return
+			}
+		}
+
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+	}
+}
+
+func DeleteBook() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bookID := c.Param("id")
+
+		for i, b := range books {
+			if b.ID == bookID {
+				books = append(books[:i], books[i+1:]...)
+				c.JSON(http.StatusOK, gin.H{"message": "Book deleted successfully"})
+				return
+			}
+		}
+
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+	}
+}
+func AddBook() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var newBook book
+
+		if err := c.BindJSON(&newBook); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		newBook.ID = primitive.NewObjectID().Hex()
+		books = append(books, newBook)
+		c.IndentedJSON(http.StatusCreated, newBook)
 	}
 }
