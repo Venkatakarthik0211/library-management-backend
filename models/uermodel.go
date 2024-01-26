@@ -17,10 +17,11 @@ type User struct {
 	User_type     *string            `json:"user_type" validate:"required, eq=ADMIN|eq=USER"`
 	Refresh_token *string            `json:"refresh_token"`
 	Created_at    time.Time          `json:"created_at"`
-	UPdated_at    time.Time          `json:"updated_at"`
+	Updated_at    time.Time          `json:"updated_at"`
 	ISBN          *string            `json:"isbn"`
 	Title         *string            `json:"title"`
 	Author        *string            `json:"author"`
 	Price         *string            `json:"price"`
 	Quantity      *string            `json:"quantity"`
+	User_id       string             `json:"user_id"`
 }

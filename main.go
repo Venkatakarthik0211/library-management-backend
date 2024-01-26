@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	routes "/library-management-backend/routes"
+	routes "github.com/Venkatakarthik0211/library-management-backend/routes"
 
 	"github.com/gin-gonic/gin"
 )

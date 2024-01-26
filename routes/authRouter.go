@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controller "libramry-management-backend/controllers"
+	controller "github.com/Venkatakarthik0211/library-management-backend/controllers"
 
 	"github.com/gin-gonic/gin"
 )
